@@ -602,29 +602,29 @@ function SecaoSimulador() {
       destaque: true,
     },
     {
-      icon: "fa-file-pdf",
+      icon: "fa-person-digging",
       tone: "blue",
-      title: "PDF Profissional da Proposta",
+      title: "Evolução de Obras",
       description:
-        "Gere uma proposta em PDF com sua marca, seu WhatsApp e todas as condições. Muito mais profissional que um print de calculadora.",
+        "Calcule a projeção exata da fase de construção. Mostre a evolução dos juros de obra mês a mês e elimine surpresas para o comprador.",
       bullets: [
-        "PDF com seu logo e cores",
-        "Todas as condições detalhadas",
-        "Pronto para enviar e imprimir",
-        "Cara de empresa grande",
+        "Curva de evolução ajustável",
+        "Cálculo exato de juros de obra",
+        "Projeção mês a mês até a entrega",
+        "PDF dedicado para apresentar",
       ],
     },
     {
-      icon: "fa-link",
+      icon: "fa-file-lines",
       tone: "blue",
-      title: "Link Digital da Proposta",
+      title: "PDF Profissional e Link Digital",
       description:
-        "Compartilhe um link que o cliente abre no WhatsApp e pode compartilhar com a família. Ideal para a decisão em conjunto.",
+        "Saia do print de calculadora. Entregue um PDF com sua marca ou compartilhe um link interativo para o cliente abrir no WhatsApp.",
       bullets: [
-        "Link personalizado",
-        "Abre em qualquer dispositivo",
+        "PDF com seu logo e cores",
+        "Link que abre no WhatsApp",
         "Compartilhável com a família",
-        "Acelera a decisão final",
+        "Cara de empresa grande",
       ],
     },
     {

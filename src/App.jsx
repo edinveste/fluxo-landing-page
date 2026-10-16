@@ -21,6 +21,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PlanosCards from "./components/planos/PlanosCards";
 import { GARANTIA_DIAS } from "./config/planos";
+import AppOriginal from "./AppOriginal";
 
 // Os CTAs "Assinar" rolam até a seção de planos (a tabela de 3 cards com toggle).
 const CHECKOUT_URL = "#preco";
@@ -1250,7 +1251,7 @@ function useReveal() {
 // ============================================================================
 
 // ── 1. NAVBAR fixa ───────────────────────────────────────────────────────────
-function Navbar({ dark, onToggleTheme }) {
+function Navbar({ dark, onToggleTheme, onVerPlanos }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -1263,7 +1264,7 @@ function Navbar({ dark, onToggleTheme }) {
   const links = [
     { href: "#funcionalidades", label: "Funcionalidades" },
     { href: "#bonus", label: "Simulador Pro" },
-    { href: "#preco", label: "Preço" },
+    { href: "/planos", label: "Preço", isPlanos: true },
     { href: "#faq", label: "FAQ" },
   ];
 
@@ -1280,10 +1281,16 @@ function Navbar({ dark, onToggleTheme }) {
         <div className="hidden lg:flex items-center gap-1">
           {links.map((l) => (
             <a
-              key={l.href}
+              key={l.label}
               href={l.href}
+              onClick={(e) => {
+                if (l.isPlanos && onVerPlanos) {
+                  e.preventDefault();
+                  onVerPlanos();
+                }
+              }}
               className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/70
-                         dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/70 transition-colors"
+                         dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/70 transition-colors cursor-pointer"
             >
               {l.label}
             </a>
@@ -1318,10 +1325,16 @@ function Navbar({ dark, onToggleTheme }) {
         <div className="px-4 pb-4 pt-1 space-y-1 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/70">
           {links.map((l) => (
             <a
-              key={l.href}
+              key={l.label}
               href={l.href}
-              onClick={() => setOpen(false)}
-              className="block px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+              onClick={(e) => {
+                setOpen(false);
+                if (l.isPlanos && onVerPlanos) {
+                  e.preventDefault();
+                  onVerPlanos();
+                }
+              }}
+              className="block px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
             >
               {l.label}
             </a>
@@ -1572,6 +1585,98 @@ function Diferencial() {
   );
 }
 
+// ── 4.1. CARTEIRA E PATRIMÔNIO (O maior ativo do corretor) ─────────────────────
+function CarteiraPatrimonio() {
+  const pilares = [
+    {
+      icon: "fa-key",
+      cor: "blue",
+      titulo: "Independência total de imobiliárias",
+      desc: "Mude de imobiliária, atue com múltiplos parceiros ou trabalhe 100% autônomo. Você nunca mais deixará seus clientes para trás em sistemas de terceiros.",
+      tag: "Sua base com você",
+    },
+    {
+      icon: "fa-shield-halved",
+      cor: "emerald",
+      titulo: "Blindado contra bloqueios do WhatsApp",
+      desc: "Não dependa da sorte de um celular não estragar ou de uma conta de WhatsApp não ser bloqueada. Seus contatos e históricos ficam em nuvem protegida.",
+      tag: "Backup seguro em nuvem",
+    },
+    {
+      icon: "fa-arrows-rotate",
+      cor: "indigo",
+      titulo: "Comissões recorrentes e recompras",
+      desc: "Quem comprou o primeiro imóvel com você hoje, compra o segundo amanhã e indica parentes depois. Uma base organizada rende vendas por anos na sua mão.",
+      tag: "Patrimônio de longo prazo",
+    },
+  ];
+
+  const CORES = {
+    blue: "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border-blue-200/50 dark:border-blue-500/20",
+    emerald: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-500/20",
+    indigo: "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 border-indigo-200/50 dark:border-indigo-500/20",
+  };
+
+  return (
+    <section className="py-20 sm:py-28 bg-slate-50/70 dark:bg-slate-900/40 border-y border-slate-100 dark:border-slate-800/60">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center reveal">
+          <Eyebrow icon="fa-shield-halved" tone="blue">Patrimônio & Liberdade</Eyebrow>
+          <h2 className="mt-5 text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white text-balance">
+            Você não trabalha para o sistema da imobiliária.{" "}
+            <span className="text-blue-600 dark:text-blue-400">
+              A carteira de clientes é sua.
+            </span>
+          </h2>
+          <p className="mt-5 text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300 text-pretty">
+            Imobiliárias passam, construtoras mudam e plantões acabam. Mas a relação de confiança com o comprador é sua. O Fluxo foi feito para ser a sua fortaleza particular: seus leads, históricos e propostas pertencem a você — para sempre.
+          </p>
+        </div>
+
+        {/* Grid dos 3 Pilares do Patrimônio */}
+        <div className="mt-14 grid md:grid-cols-3 gap-6 reveal">
+          {pilares.map((p) => (
+            <div
+              key={p.titulo}
+              className="group relative p-8 rounded-3xl border bg-white dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500/40 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${CORES[p.cor]}`}>
+                    <i className={`fa-solid ${p.icon} text-lg`} />
+                  </div>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${CORES[p.cor]}`}>
+                    {p.tag}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  {p.titulo}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {p.desc}
+                </p>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400">
+                <i className="fa-solid fa-circle-check text-xs" />
+                <span>Garantido no Fluxo CRM</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Faixa de reflexão / autoridade */}
+        <div className="mt-12 max-w-4xl mx-auto rounded-2xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-blue-600/10 dark:from-blue-500/10 dark:via-indigo-500/10 dark:to-blue-500/10 border border-blue-200/60 dark:border-blue-500/20 p-6 sm:p-7 text-center reveal">
+          <p className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
+            💡 <strong className="text-blue-600 dark:text-blue-400 font-bold">O maior erro de um corretor</strong> é passar anos gerando negócios para terceiros e, no fim das contas, não ter a sua própria base sob controle. Construa seu patrimônio com segurança.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ============================================================================
 // FLUXO — Seções B: Funcionalidades (grid + blocos texto+print) e Bônus
 // ============================================================================
@@ -1626,206 +1731,150 @@ function FeatureSplit({
 }
 
 function Funcionalidades() {
-  const cards = [
+  const pilares = [
     {
-      icon: "fa-chart-pie",
-      tone: "blue",
-      title: "Dashboard de Métricas",
-      desc: "Conversão por fase, origens dos leads e score do funil — com filtro de período pra ver o que muda.",
-    },
-    {
-      icon: "fa-id-card-clip",
-      tone: "indigo",
-      title: "Ficha do Lead completa",
-      desc: "Histórico, anotações, tarefas e propostas vinculadas, composição financeira e score, tudo num drawer.",
-    },
-    {
-      icon: "fa-list-check",
-      tone: "amber",
-      title: "Tarefas e Follow-ups",
-      desc: "Agrupados por urgência: atrasadas, hoje e próximos 7 dias. Você sabe exatamente o que fazer agora.",
-    },
-    {
+      numero: "01",
       icon: "fa-bolt",
-      tone: "purple",
-      title: "Automações por fase",
-      desc: "Ao mover o lead, o Fluxo cria a tarefa certa e adianta a próxima etapa automaticamente.",
+      cor: "blue",
+      badge: "Captação Automática",
+      titulo: "Leads de anúncios e links caindo direto no seu funil",
+      desc: "Integre campanhas do Meta Ads (Facebook/Instagram), Google Ads e suas páginas de captura. O cliente preenche e entra na hora no CRM com notificação imediata.",
+      beneficios: [
+        "Integração oficial com Meta e Google Ads",
+        "Páginas de captura e link na Bio inclusos",
+        "Redirecionamento automático pro seu WhatsApp",
+        "Atendimento em segundos sem perder contato",
+      ],
     },
     {
+      numero: "02",
+      icon: "fa-table-columns",
+      cor: "indigo",
+      badge: "Gestão Visual",
+      titulo: "Funil Kanban com fases 100% personalizáveis",
+      desc: "Arraste e solte os leads entre as etapas do seu processo comercial. Tenha a ficha completa do cliente com histórico, tarefas, anotações e score de qualificação.",
+      beneficios: [
+        "Visualização em Kanban, Cards ou Tabela",
+        "Etapas, cores e tags customizáveis",
+        "Ficha com histórico, anotações e propostas",
+        "Zero leads esquecidos no WhatsApp",
+      ],
+    },
+    {
+      numero: "03",
+      icon: "fa-comment-dots",
+      cor: "emerald",
+      badge: "Velocidade no Atendimento",
+      titulo: "Respostas em 1 clique com mensagens inteligentes",
+      desc: "Padronize seu atendimento sem travar pensando no que escrever. Modelos prontos de WhatsApp que preenchem sozinhos o nome do cliente, imóvel e valores da proposta.",
+      beneficios: [
+        "Modelos prontos de WhatsApp e e-mail",
+        "Variáveis que preenchem os dados sozinhas",
+        "Disparo com 1 clique direto da ficha do lead",
+        "Agenda de follow-ups com alertas no sino",
+      ],
+    },
+    {
+      numero: "04",
       icon: "fa-sack-dollar",
-      tone: "emerald",
-      title: "Resultado Comercial",
-      desc: "Pipeline aberto, receita, comissão, ticket médio e conversão — o dinheiro em jogo, claro.",
-    },
-    {
-      icon: "fa-link",
-      tone: "cyan",
-      title: "Captura de leads",
-      desc: "Integração Meta Ads, Link público e landing pages prontas que jogam o lead direto no funil e mandam você pro WhatsApp.",
+      cor: "amber",
+      badge: "Resultado Comercial",
+      titulo: "Pipeline de negócios e previsão de comissões",
+      desc: "Transforme leads em negócios com um clique. Saiba exatamente o VGV em negociação, comissões a receber, taxa de conversão e motivos de perda em tempo real.",
+      beneficios: [
+        "Pipeline de fechamento (Ganho vs. Perdido)",
+        "Previsão de comissão e VGV somados",
+        "Registro de motivos de perda para evoluir",
+        "Métricas comerciais sem planilhas complexas",
+      ],
     },
   ];
 
+  const CORES = {
+    blue: {
+      badge: "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border-blue-200/60 dark:border-blue-500/20",
+      icon: "bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white",
+      check: "text-blue-500",
+      num: "text-blue-500/15 dark:text-blue-400/15",
+      border: "hover:border-blue-300 dark:hover:border-blue-500/40",
+    },
+    indigo: {
+      badge: "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 border-indigo-200/60 dark:border-indigo-500/20",
+      icon: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white",
+      check: "text-indigo-500",
+      num: "text-indigo-500/15 dark:text-indigo-400/15",
+      border: "hover:border-indigo-300 dark:hover:border-indigo-500/40",
+    },
+    emerald: {
+      badge: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-500/20",
+      icon: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white",
+      check: "text-emerald-500",
+      num: "text-emerald-500/15 dark:text-emerald-400/15",
+      border: "hover:border-emerald-300 dark:hover:border-emerald-500/40",
+    },
+    amber: {
+      badge: "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 border-amber-200/60 dark:border-amber-500/20",
+      icon: "bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:bg-amber-600 group-hover:text-white",
+      check: "text-amber-500",
+      num: "text-amber-500/15 dark:text-amber-400/15",
+      border: "hover:border-amber-300 dark:hover:border-amber-500/40",
+    },
+  };
+
   return (
-    <section id="funcionalidades" className="py-16 sm:py-24">
+    <section id="funcionalidades" className="py-16 sm:py-24 bg-slate-50/50 dark:bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto text-center reveal">
-          <Eyebrow icon="fa-layer-group">Funcionalidades</Eyebrow>
+          <Eyebrow icon="fa-layer-group">Módulo CRM</Eyebrow>
           <h2 className="mt-5 text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white text-balance">
-            Tudo que o corretor autônomo precisa. Nada do que atrapalha.
+            Tudo que o corretor autônomo precisa. Sem complicação.
           </h2>
-          <p className="mt-4 text-base text-slate-600 dark:text-slate-400 text-pretty">
-            Do primeiro contato ao fechamento, num fluxo só. Veja o que vem na
-            sua assinatura.
+          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 text-pretty">
+            Do primeiro contato até o recebimento da comissão, veja como o Fluxo organiza seu dia a dia em 4 pilares diretos:
           </p>
         </div>
 
-        {/* Grid de cards */}
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 reveal">
-          {cards.map((c) => (
-            <FeatureCard
-              key={c.title}
-              icon={c.icon}
-              tone={c.tone}
-              title={c.title}
-            >
-              {c.desc}
-            </FeatureCard>
-          ))}
-        </div>
+        {/* Grid dos 4 Pilares de Alto Impacto */}
+        <div className="mt-12 grid sm:grid-cols-2 gap-6 reveal">
+          {pilares.map((p) => {
+            const st = CORES[p.cor];
+            return (
+              <div
+                key={p.numero}
+                className={`group relative p-7 sm:p-8 rounded-3xl border bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300 hover:-translate-y-1 ${st.border}`}
+              >
+                {/* Número decorativo de fundo */}
+                <span className={`absolute top-6 right-7 font-black text-4xl select-none ${st.num}`}>
+                  {p.numero}
+                </span>
 
-        {/* Blocos texto + print */}
-        <div className="mt-20 sm:mt-28 space-y-20 sm:space-y-28">
-          <FeatureSplit
-            eyebrow="Funil de Vendas"
-            icon="fa-table-columns"
-            title="Funil Kanban com fases 100% personalizáveis"
-            desc="Crie, renomeie e reordene as etapas do seu jeito. Arraste o lead de uma fase pra outra e veja todo o pipeline numa tela — do “Novo Lead” ao “Venda Realizada”."
-            bullets={[
-              "Funil estilo Kanban, Cards e Tabela",
-              "Crie, renomeie e reordene etapas livremente",
-              "Arraste e solte o lead entre as fases",
-              'Cor e contador por fase, mais a aba "Perdidos"',
-            ]}
-            mockup={
-              <>
-                <BrowserMockup
-                  label="Funil de Leads (Kanban)"
-                  icon="fa-table-columns"
-                  url="fluxocrm.com.br/crm"
-                >
-                  <FixedShot width={600} ratio="16/10">
-                    <MockupFunilInterativo initialView="cards" fixo />
-                  </FixedShot>
-                </BrowserMockup>
-                {/* Selo flutuante */}
-                <div className="hidden sm:flex absolute -bottom-5 -left-5 items-center gap-3 px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center">
-                    <i className="fa-solid fa-arrow-trend-up text-emerald-600 dark:text-emerald-400" />
+                <div className="flex items-center gap-3 mb-5">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${st.icon}`}>
+                    <i className={`fa-solid ${p.icon} text-lg`} />
                   </div>
-                  <div className="leading-tight">
-                    <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
-                      Nenhum lead
-                    </p>
-                    <p className="text-sm font-bold text-slate-800 dark:text-white">
-                      esquecido no WhatsApp
-                    </p>
-                  </div>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border ${st.badge}`}>
+                    {p.badge}
+                  </span>
                 </div>
-              </>
-            }
-          />
 
-          <FeatureSplit
-            reverse
-            eyebrow="Gestão de Negócios"
-            icon="fa-handshake"
-            title="Pipeline de negócios: do lead ao Ganho ou Perdido"
-            desc="Marque quando o lead vira negócio e acompanhe o pipeline estilo comercial. Feche como Ganho ou Perdido, registre o valor da venda, a comissão e o motivo da perda pra aprender com cada negociação."
-            bullets={[
-              "Transforme o lead em negócio com um clique",
-              "Feche como Ganho ou Perdido e registre o motivo",
-              "Valor da venda e comissão somados no resultado",
-            ]}
-            mockup={
-              <BrowserMockup
-                label="Dashboard de Negócios"
-                icon="fa-sack-dollar"
-                url="fluxocrm.com.br/crm"
-              >
-                <FixedShot width={600} ratio="16/10">
-                  <MockupNegocios />
-                </FixedShot>
-              </BrowserMockup>
-            }
-          />
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  {p.titulo}
+                </h3>
+                <p className="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {p.desc}
+                </p>
 
-          <FeatureSplit
-            eyebrow="Captura automática"
-            icon="fa-link"
-            title="Leads entram sozinhos — direto no seu funil"
-            desc="Crie campanhas no Meta/Google Ads, use seu link público ou as landing pages prontas do Fluxo. O lead preenche, cai automaticamente na primeira fase do funil e você é redirecionado pro WhatsApp pra atender na hora."
-            bullets={[
-              "Campanhas no Meta/Google Ads",
-              "Link público e landing pages prontas",
-              "Lead cai direto na primeira fase do funil",
-              "Redirecionamento automático pro seu WhatsApp",
-            ]}
-            mockup={
-              <BrowserMockup
-                label="Dashboard de Métricas"
-                icon="fa-chart-pie"
-                url="fluxocrm.com.br/crm"
-              >
-                <FixedShot width={600} ratio="16/10">
-                  <MockupMetricas />
-                </FixedShot>
-              </BrowserMockup>
-            }
-          />
-
-          <FeatureSplit
-            reverse
-            tone="emerald"
-            eyebrow="Atendimento rápido"
-            icon="fa-comment-dots"
-            title="Respondeu na hora, com a mensagem certa"
-            desc="Crie e salve seus modelos de WhatsApp e e-mail com variáveis (nome do cliente, imóvel, valor). Na hora do follow-up, é um clique — sem travar pensando no que escrever, sem copiar e colar do bloco de notas."
-            bullets={[
-              "Modelos de WhatsApp e e-mail prontos e reutilizáveis",
-              "Variáveis que preenchem nome, imóvel e valor sozinhas",
-              "Dispare direto da ficha do lead, em um clique",
-              "Padronize seu atendimento e nunca esqueça um follow-up",
-            ]}
-            mockup={
-              <BrowserMockup
-                label="Mensagens prontas (WhatsApp + e-mail)"
-                icon="fa-comment-dots"
-              >
-                <FixedShot width={600} ratio="16/10">
-                  <MockupTemplates />
-                </FixedShot>
-              </BrowserMockup>
-            }
-          />
-
-          <FeatureSplit
-            tone="amber"
-            eyebrow="Presença profissional · Premium"
-            icon="fa-mobile-screen-button"
-            title="Páginas de Captura Prontas para Multiplicar seus Leads"
-            desc="Escale suas vendas sem precisar criar sites do zero. Tenha acesso a páginas de captura de alta conversão já estruturadas para gerar oportunidades reais. Basta usar seus links em anúncios de tráfego pago, grupos de WhatsApp ou no seu Linktree. Cada contato gerado cai automaticamente no seu CRM."
-            bullets={[
-              "Prontas para converter sem precisar saber programar",
-              "Divulgue em anúncios, redes sociais, WhatsApp ou Linktree",
-              "Captação automática direto para o seu CRM em tempo real",
-              "Automatize a captação de clientes e foque em vender",
-            ]}
-            mockup={
-              <PhoneMockup label="Link na Bio (LinkTree)" icon="fa-link">
-                <MockupLinkBio />
-              </PhoneMockup>
-            }
-          />
+                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800/80 space-y-2.5">
+                  {p.beneficios.map((b) => (
+                    <div key={b} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
+                      <i className={`fa-solid fa-circle-check text-xs ${st.check}`} />
+                      <span>{b}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1863,16 +1912,15 @@ function Bonus() {
       desc: 'Duas propostas lado a lado. O cliente para de decidir se compra e passa a escolher qual leva — a dúvida vira "qual", não "se".',
     },
     {
-      icon: "fa-file-pdf",
-      title: "PDF profissional da proposta",
-      desc: "Saia do print de calculadora. Entregue uma proposta com a sua marca, do nível de quem é referência.",
+      icon: "fa-person-digging",
+      title: "Evolução de Obras",
+      desc: "Calcule a projeção exata da fase de construção. Mostre a evolução dos juros de obra mês a mês e elimine surpresas para o comprador.",
     },
     {
-      icon: "fa-link",
-      title: "Link digital personalizado",
-      desc: "Um link que o cliente abre no WhatsApp e compartilha com a família na hora de decidir.",
+      icon: "fa-file-lines",
+      title: "PDF profissional e Link digital",
+      desc: "Saia do print de calculadora. Gere uma proposta em PDF com a sua marca ou envie um link interativo para o cliente abrir no WhatsApp.",
     },
-
   ];
 
   return (
@@ -1993,145 +2041,131 @@ function Bonus() {
 // FLUXO — Seções C: Preço + Garantia, FAQ, CTA Final, Footer
 // ============================================================================
 
-// ── 7. PREÇO ──────────────────────────────────────────────────────────────────
-function Preco() {
+// ── 7. TESTE GRÁTIS — SEÇÃO DE FECHAMENTO NA HOME ───────────────────────────
+function TesteGratisSecao({ onVerPlanos }) {
   return (
-    <section id="preco" className="py-16 sm:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto text-center reveal">
-          <Eyebrow icon="fa-tag">Planos</Eyebrow>
-          <h2 className="mt-5 text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white text-balance">
-            Escolha o plano do seu momento.
+    <section id="preco" className="py-20 sm:py-28 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent dark:via-blue-950/10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-blue-500/60 dark:border-blue-500/40 bg-gradient-to-br from-blue-50 via-white to-blue-50/40 dark:from-blue-900/20 dark:via-slate-900 dark:to-slate-900 p-8 sm:p-14 text-center shadow-2xl shadow-blue-500/10 reveal">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-blue-600 text-white shadow-lg shadow-blue-600/30 mb-6">
+            <i className="fa-solid fa-gift text-[11px]" /> 10 dias 100% grátis
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white text-balance leading-tight">
+            Experimente o CRM + Simulador{" "}
+            <span className="text-blue-600 dark:text-blue-400">sem pagar nada</span>
           </h2>
-          <p className="mt-4 text-base text-slate-600 dark:text-slate-400 text-pretty">
-            Comece pelo Simulador Pro ou vá direto para o Crm completo. O
-            Simulador Pro já vem incluso no plano do CRM.
+
+          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-pretty">
+            Crie sua conta em 1 minuto e libere tudo: funil Kanban, gestão de leads, tarefas, mensagens prontas de WhatsApp e o Simulador Pro de propostas. Sem cartão de crédito.
           </p>
-        </div>
 
-        {/* ── Teste grátis (reduz a fricção ANTES do preço) ──────────────────
-            Leva pro cadastro (/login?cadastro=1, já abre no modo Criar Conta);
-            a ativação em si é 1 clique no banner do painel (TrialBanner) após
-            criar a conta — trial de 10 dias do CRM Pro, ver useAuth. */}
-        <div className="mt-10 max-w-3xl mx-auto reveal">
-          <div className="relative overflow-hidden rounded-3xl border-2 border-blue-500/60 dark:border-blue-500/40 bg-gradient-to-br from-blue-50 to-white dark:from-blue-500/10 dark:to-slate-900/40 p-7 sm:p-9 text-center">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-blue-600 text-white shadow-lg shadow-blue-600/30">
-              <i className="fa-solid fa-gift text-[10px]" /> 10 dias grátis
-            </span>
-            <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white text-balance">
-              Experimente o CRM Pro{" "}
-              <span className="text-blue-600 dark:text-blue-400">grátis</span>{" "}
-              antes de assinar
-            </h3>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto text-pretty">
-              Crie sua conta e libere{" "}
-              <strong className="font-bold text-slate-800 dark:text-white">
-                todas as ferramentas do CRM por 10 dias
-              </strong>{" "}
-              — leads, funil, tarefas e captura. Sem cartão de crédito. Você só
-              assina se gostar.
-            </p>
-            <div className="mt-6 flex justify-center">
-              <a
-                href="https://app.fluxocrm.com.br/login?cadastro=1"
-                className="inline-flex items-center justify-center gap-2.5 rounded-xl font-bold tracking-tight h-14 px-8 text-base bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/30 hover:-translate-y-0.5 transition-all"
-              >
-                <i className="fa-solid fa-bolt" /> Começar teste grátis
-              </a>
-            </div>
-            <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-              <i className="fa-solid fa-circle-check text-emerald-500 mr-1" />{" "}
-              Sem cartão de crédito
-              <span className="mx-2 text-slate-300 dark:text-slate-600">•</span>
-              <i className="fa-solid fa-circle-check text-emerald-500 mr-1" />{" "}
-              Ativação em 1 clique no painel
-            </p>
-          </div>
-        </div>
-
-        {/* ── Âncoras de valor ──────────────────────────────────────────────
-            Ficam ACIMA dos cards de propósito: enquadram o preço antes de o
-            corretor ver os números (ancoragem). Uma comissão de imóvel é da
-            ordem de milhares de reais — o plano anual é uma fração disso.
-            Valores/dia derivados de config/planos.js (Pro anual R$297 ≈
-            R$0,81/dia). Ao mudar preço no config, revisar o "~R$0,81/dia". */}
-        {/* <div className="mt-10 grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto reveal">
-          {[
-            {
-              icone: "fa-hand-holding-dollar",
-              titulo: "Uma fração da comissão",
-              texto: "Uma única venda paga a ferramenta por anos.",
-            },
-            {
-              icone: "fa-mug-hot",
-              titulo: "Menos de R$1 por dia",
-              texto: "Mais barato que o cafezinho (R$0,81/dia no plano anual).",
-            },
-            {
-              icone: "fa-bell",
-              titulo: "Um lead salvo já se paga",
-              texto: "Recupere 1 lead no WhatsApp e a conta já fechou.",
-            },
-          ].map((a) => (
-            <div
-              key={a.titulo}
-              className="flex flex-col items-center text-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/50 px-5 py-6"
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="https://app.fluxocrm.com.br/login?cadastro=1"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl font-bold tracking-tight h-14 px-8 text-base bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-600/30 hover:-translate-y-0.5 transition-all"
             >
-              <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 flex items-center justify-center">
-                <i className={`fa-solid ${a.icone} text-lg`} />
-              </div>
-              <p className="text-sm font-bold text-slate-900 dark:text-white">
-                {a.titulo}
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">
-                {a.texto}
-              </p>
-            </div>
-          ))}
-        </div> */}
+              <i className="fa-solid fa-bolt" /> Começar meu teste grátis agora
+            </a>
 
-        <div className="mt-12 reveal">
-          <PlanosCards />
-        </div>
+            <button
+              onClick={onVerPlanos}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl font-bold text-sm h-14 px-6 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-sm"
+            >
+              <span>Ver planos e valores pagos</span>
+              <i className="fa-solid fa-arrow-right text-xs" />
+            </button>
+          </div>
 
-        {/* ── Destaque: carteira própria ────────────────────────────────────
-            Argumento de PATRIMÔNIO (não de preço, por isso fica separado das
-            âncoras de valor acima): o corretor vira dono da própria base. */}
-        <div className="mt-12 max-w-3xl mx-auto reveal">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-5 rounded-3xl border border-blue-200 dark:border-blue-500/30 bg-blue-50/60 dark:bg-blue-500/5 p-6 sm:p-7">
-            <div className="shrink-0 w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center mx-auto sm:mx-0">
-              <i className="fa-solid fa-address-book text-2xl text-blue-500" />
-            </div>
-            <div className="flex-1 min-w-0 text-center sm:text-left">
-              <p className="text-base font-bold text-slate-900 dark:text-white mb-1">
-                Sua carteira de clientes é sua — pra sempre
-              </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-snug">
-                Seus leads e todo o histórico ficam organizados e{" "}
-                <span className="font-semibold text-slate-600 dark:text-slate-300">
-                  pertencem a você
-                </span>
-                , não presos no WhatsApp lotado nem no sistema da imobiliária. É
-                o maior patrimônio de um corretor — e aqui ele fica seguro.
-              </p>
-            </div>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <i className="fa-solid fa-circle-check text-emerald-500" /> Sem cartão de crédito
+            </span>
+            <span className="flex items-center gap-1.5">
+              <i className="fa-solid fa-circle-check text-emerald-500" /> Ativação em 1 clique
+            </span>
+            <span className="flex items-center gap-1.5">
+              <i className="fa-solid fa-circle-check text-emerald-500" /> Cancele quando quiser
+            </span>
           </div>
         </div>
-
-        {/* Garantia */}
-        {/*<div className="mt-12 flex justify-center reveal">
-          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-500/10">
-            <i className="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400 text-lg" />
-            <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
-              Garantia incondicional de {GARANTIA_DIAS} dias — não gostou,
-              devolvemos 100% do seu dinheiro, sem perguntas.
-            </p>
-          </div>
-        </div>*/}
       </div>
     </section>
   );
 }
+
+// ── PÁGINA DEDICADA DE PLANOS (/planos) ──────────────────────────────────────
+function PaginaPlanos({ dark, onToggleTheme, onVoltar }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 antialiased selection:bg-blue-600/20">
+      {/* Header específico da página de planos */}
+      <header className="sticky top-0 z-50 bg-white/85 dark:bg-[#0B0F19]/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/70">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-[72px] flex items-center justify-between gap-4">
+          <div onClick={onVoltar} className="cursor-pointer">
+            <Logo />
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle dark={dark} onToggle={onToggleTheme} />
+            <button
+              onClick={onVoltar}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+            >
+              <i className="fa-solid fa-arrow-left text-xs" />
+              <span>Voltar ao início</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <Eyebrow icon="fa-tag">Planos e Valores</Eyebrow>
+            <h1 className="mt-5 text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white text-balance">
+              Escolha o plano ideal para a sua rotina.
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 text-pretty">
+              Comece pelo Simulador Pro ou vá direto para o CRM Pro completo. Assinatura transparente, sem multas e com garantia total.
+            </p>
+          </div>
+
+          {/* Cards de Preços oficiais */}
+          <PlanosCards />
+
+          {/* Faixa de Teste Grátis de apoio */}
+          <div className="mt-14 max-w-3xl mx-auto text-center p-7 sm:p-9 rounded-3xl bg-blue-50/60 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-4">
+              <i className="fa-solid fa-gift text-xl" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              Quer testar o CRM Pro antes de assinar?
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto mt-2">
+              Ative 10 dias de teste 100% gratuito do CRM Pro. Sem cartão de crédito e sem pegadinhas.
+            </p>
+            <div className="mt-5">
+              <a
+                href="https://app.fluxocrm.com.br/login?cadastro=1"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5"
+              >
+                <i className="fa-solid fa-bolt" /> Começar teste grátis por 10 dias
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+
 
 // ── 8. FAQ ────────────────────────────────────────────────────────────────────
 function Faq() {
@@ -2403,20 +2437,101 @@ function FluxoLandingPage() {
     return () => clearTimeout(t);
   }, []);
 
+  const [pagina, setPagina] = useState(() => {
+    if (typeof window !== "undefined" && window.location.pathname.startsWith("/planos")) {
+      return "planos";
+    }
+    return "home";
+  });
+
+  useEffect(() => {
+    const onPopState = () => {
+      if (window.location.pathname.startsWith("/planos")) {
+        setPagina("planos");
+      } else {
+        setPagina("home");
+      }
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  const irParaPlanos = () => {
+    window.history.pushState(null, "", "/planos");
+    setPagina("planos");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const irParaHome = () => {
+    window.history.pushState(null, "", "/");
+    setPagina("home");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const [usarOriginal, setUsarOriginal] = useState(false);
+
+  if (usarOriginal) {
+    return (
+      <div className="relative">
+        <AppOriginal />
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={() => setUsarOriginal(false)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
+          >
+            <i className="fa-solid fa-compress text-[10px] text-blue-400" /> Versão compacta
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (pagina === "planos") {
+    return (
+      <div className="relative">
+        <PaginaPlanos
+          dark={dark}
+          onToggleTheme={() => setDark((v) => !v)}
+          onVoltar={irParaHome}
+        />
+        {/* Botão flutuante de teste para comparar com a versão original */}
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={() => setUsarOriginal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
+          >
+            <i className="fa-solid fa-expand text-[10px] text-slate-400" /> Versão completa
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 antialiased selection:bg-blue-600/20">
-      <Navbar dark={dark} onToggleTheme={() => setDark((v) => !v)} />
+      <Navbar dark={dark} onToggleTheme={() => setDark((v) => !v)} onVerPlanos={irParaPlanos} />
       <main>
         <Hero />
         <Dor />
         <Diferencial />
+        <CarteiraPatrimonio />
         <Funcionalidades />
         <Bonus />
-        <Preco />
+        <TesteGratisSecao onVerPlanos={irParaPlanos} />
         <Faq />
         <CtaFinal />
       </main>
       <Footer />
+
+      {/* Botão flutuante de teste para comparar com a versão original */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={() => setUsarOriginal(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
+        >
+          <i className="fa-solid fa-expand text-[10px] text-slate-400" /> Versão completa
+        </button>
+      </div>
     </div>
   );
 }
