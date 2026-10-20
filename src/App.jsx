@@ -2547,49 +2547,25 @@ function FluxoLandingPage() {
 
   if (pagina === "termos") {
     return (
-      <div className="relative">
-        <Termos
-          dark={dark}
-          onToggleTheme={() => setDark((v) => !v)}
-          onVoltar={irParaHome}
-          onVerTermos={irParaTermos}
-          onVerPrivacidade={irParaPrivacidade}
-          Footer={Footer}
-        />
-        {/* Botão flutuante de teste para comparar com a versão original */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={() => setUsarOriginal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
-          >
-            <i className="fa-solid fa-expand text-[10px] text-slate-400" /> Versão completa
-          </button>
-        </div>
-      </div>
+      <Termos
+        dark={dark}
+        onToggleTheme={() => setDark((v) => !v)}
+        onVoltar={irParaHome}
+        onVerTermos={irParaTermos}
+        onVerPrivacidade={irParaPrivacidade}
+      />
     );
   }
 
   if (pagina === "privacidade") {
     return (
-      <div className="relative">
-        <Privacidade
-          dark={dark}
-          onToggleTheme={() => setDark((v) => !v)}
-          onVoltar={irParaHome}
-          onVerTermos={irParaTermos}
-          onVerPrivacidade={irParaPrivacidade}
-          Footer={Footer}
-        />
-        {/* Botão flutuante de teste para comparar com a versão original */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={() => setUsarOriginal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
-          >
-            <i className="fa-solid fa-expand text-[10px] text-slate-400" /> Versão completa
-          </button>
-        </div>
-      </div>
+      <Privacidade
+        dark={dark}
+        onToggleTheme={() => setDark((v) => !v)}
+        onVoltar={irParaHome}
+        onVerTermos={irParaTermos}
+        onVerPrivacidade={irParaPrivacidade}
+      />
     );
   }
 

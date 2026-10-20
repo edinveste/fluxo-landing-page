@@ -233,13 +233,38 @@ export default function Termos({
         </div>
       </main>
 
-      {Footer && (
-        <Footer
-          onVerTermos={onVerTermos}
-          onVerPrivacidade={onVerPrivacidade}
-          onVoltarHome={onVoltar}
-        />
-      )}
+      {/* Rodapé minimalista e discreto para leitura jurídica */}
+      <footer className="mt-8 pb-12 border-t border-slate-200/70 dark:border-slate-800/80 pt-8 text-xs text-slate-400 dark:text-slate-500">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p>© 2026 Fluxo CRM. Todos os direitos reservados.</p>
+          <div className="flex items-center gap-5">
+            <a
+              href="/termos"
+              onClick={(e) => {
+                if (onVerTermos) {
+                  e.preventDefault();
+                  onVerTermos();
+                }
+              }}
+              className="text-slate-700 dark:text-slate-200 font-semibold cursor-pointer"
+            >
+              Termos de uso
+            </a>
+            <a
+              href="/privacidade"
+              onClick={(e) => {
+                if (onVerPrivacidade) {
+                  e.preventDefault();
+                  onVerPrivacidade();
+                }
+              }}
+              className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer transition-colors"
+            >
+              Privacidade
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
