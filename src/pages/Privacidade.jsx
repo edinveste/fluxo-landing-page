@@ -258,7 +258,7 @@ export default function Privacidade({
                 </li>
                 <li>
                   <strong>Por E-mail:</strong> Envie um e-mail para{" "}
-                  <strong>edmilson.oliver20@gmail.com</strong> com o assunto
+                  <strong>contato@fluxocrm.com.br</strong> com o assunto
                   &quot;Solicitação de Exclusão de Conta&quot;. O processo será concluído em
                   até 48 horas úteis.
                 </li>
@@ -277,10 +277,10 @@ export default function Privacidade({
               <p className="mt-2 font-medium text-slate-800 dark:text-slate-100 flex items-center gap-2">
                 <i className="fa-solid fa-envelope text-slate-400"></i>
                 <a
-                  href="mailto:edmilson.oliver20@gmail.com"
+                  href="mailto:contato@fluxocrm.com.br"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  edmilson.oliver20@gmail.com
+                  contato@fluxocrm.com.br
                 </a>
               </p>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
