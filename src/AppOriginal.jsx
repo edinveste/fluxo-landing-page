@@ -2241,7 +2241,7 @@ function CtaFinal() {
 }
 
 // ── 10. FOOTER ────────────────────────────────────────────────────────────────
-function Footer() {
+function Footer({ onVerTermos, onVerPrivacidade }) {
   const cols = [
     {
       title: "Produto",
@@ -2304,13 +2304,25 @@ function Footer() {
           <div className="flex items-center gap-5 text-xs text-slate-400 dark:text-slate-500">
             <a
               href="/termos"
-              className="hover:text-slate-600 dark:hover:text-slate-300"
+              onClick={(e) => {
+                if (onVerTermos) {
+                  e.preventDefault();
+                  onVerTermos();
+                }
+              }}
+              className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               Termos de uso
             </a>
             <a
               href="/privacidade"
-              className="hover:text-slate-600 dark:hover:text-slate-300"
+              onClick={(e) => {
+                if (onVerPrivacidade) {
+                  e.preventDefault();
+                  onVerPrivacidade();
+                }
+              }}
+              className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               Privacidade
             </a>
@@ -2325,7 +2337,7 @@ function Footer() {
 // FLUXO — App raiz: estado de tema (DARK por padrão) + composição + mount
 // ============================================================================
 
-function FluxoLandingPage() {
+function FluxoLandingPage({ onVerTermos, onVerPrivacidade }) {
   // Tema escuro é o PADRÃO ao abrir
   const [dark, setDark] = useState(() => {
     try {
@@ -2415,7 +2427,7 @@ function FluxoLandingPage() {
         <Faq />
         <CtaFinal />
       </main>
-      <Footer />
+      <Footer onVerTermos={onVerTermos} onVerPrivacidade={onVerPrivacidade} />
     </div>
   );
 }

@@ -22,6 +22,8 @@ import React, { useState, useEffect, useRef } from "react";
 import PlanosCards from "./components/planos/PlanosCards";
 import { GARANTIA_DIAS } from "./config/planos";
 import AppOriginal from "./AppOriginal";
+import Termos from "./pages/Termos";
+import Privacidade from "./pages/Privacidade";
 
 // Os CTAs "Assinar" rolam até a seção de planos (a tabela de 3 cards com toggle).
 const CHECKOUT_URL = "#preco";
@@ -32,11 +34,20 @@ const CHECKOUT_URL = "#preco";
 // shadow suave, Font Awesome. Tema claro + escuro (variantes dark:).
 // ============================================================================
 // ── Logo Fluxo (igual ao da sidebar do app) ─────────────────────────────────
-function Logo({ size = "md" }) {
+function Logo({ size = "md", onVoltar }) {
   const box = size === "lg" ? "w-11 h-11 text-base" : "w-9 h-9 text-sm";
   const word = size === "lg" ? "text-2xl" : "text-lg";
   return (
-    <a href="#topo" className="flex items-center gap-3 group">
+    <a
+      href={onVoltar ? "/" : "#topo"}
+      onClick={(e) => {
+        if (onVoltar) {
+          e.preventDefault();
+          onVoltar();
+        }
+      }}
+      className="flex items-center gap-3 group"
+    >
       <div
         className={`${box} rounded-xl overflow-hidden shadow-lg shadow-blue-500/30 transition-transform duration-300 group-hover:scale-105`}
       >
@@ -2095,9 +2106,10 @@ function TesteGratisSecao({ onVerPlanos }) {
 }
 
 // ── PÁGINA DEDICADA DE PLANOS (/planos) ──────────────────────────────────────
-function PaginaPlanos({ dark, onToggleTheme, onVoltar }) {
+function PaginaPlanos({ dark, onToggleTheme, onVoltar, onVerTermos, onVerPrivacidade }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
+    document.title = "Planos e Preços | Fluxo CRM";
   }, []);
 
   return (
@@ -2160,7 +2172,11 @@ function PaginaPlanos({ dark, onToggleTheme, onVoltar }) {
         </div>
       </main>
 
-      <Footer />
+      <Footer
+        onVerTermos={onVerTermos}
+        onVerPrivacidade={onVerPrivacidade}
+        onVoltarHome={onVoltar}
+      />
     </div>
   );
 }
@@ -2276,7 +2292,7 @@ function CtaFinal() {
 }
 
 // ── 10. FOOTER ────────────────────────────────────────────────────────────────
-function Footer() {
+function Footer({ onVerTermos, onVerPrivacidade, onVoltarHome }) {
   const cols = [
     {
       title: "Produto",
@@ -2293,7 +2309,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="grid md:grid-cols-12 gap-10">
           <div className="md:col-span-5">
-            <Logo />
+            <Logo onVoltar={onVoltarHome} />
             <p className="mt-4 text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-xs">
               O CRM simples, funcional e focado no corretor autônomo. Organize
               seus leads e feche mais vendas — sem perder tempo configurando
@@ -2339,13 +2355,25 @@ function Footer() {
           <div className="flex items-center gap-5 text-xs text-slate-400 dark:text-slate-500">
             <a
               href="/termos"
-              className="hover:text-slate-600 dark:hover:text-slate-300"
+              onClick={(e) => {
+                if (onVerTermos) {
+                  e.preventDefault();
+                  onVerTermos();
+                }
+              }}
+              className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               Termos de uso
             </a>
             <a
               href="/privacidade"
-              className="hover:text-slate-600 dark:hover:text-slate-300"
+              onClick={(e) => {
+                if (onVerPrivacidade) {
+                  e.preventDefault();
+                  onVerPrivacidade();
+                }
+              }}
+              className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               Privacidade
             </a>
@@ -2438,16 +2466,24 @@ function FluxoLandingPage() {
   }, []);
 
   const [pagina, setPagina] = useState(() => {
-    if (typeof window !== "undefined" && window.location.pathname.startsWith("/planos")) {
-      return "planos";
+    if (typeof window !== "undefined") {
+      const p = window.location.pathname;
+      if (p.startsWith("/planos")) return "planos";
+      if (p.startsWith("/termos")) return "termos";
+      if (p.startsWith("/privacidade")) return "privacidade";
     }
     return "home";
   });
 
   useEffect(() => {
     const onPopState = () => {
-      if (window.location.pathname.startsWith("/planos")) {
+      const p = window.location.pathname;
+      if (p.startsWith("/planos")) {
         setPagina("planos");
+      } else if (p.startsWith("/termos")) {
+        setPagina("termos");
+      } else if (p.startsWith("/privacidade")) {
+        setPagina("privacidade");
       } else {
         setPagina("home");
       }
@@ -2462,24 +2498,95 @@ function FluxoLandingPage() {
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
+  const irParaTermos = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    window.history.pushState(null, "", "/termos");
+    setPagina("termos");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const irParaPrivacidade = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    window.history.pushState(null, "", "/privacidade");
+    setPagina("privacidade");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
   const irParaHome = () => {
     window.history.pushState(null, "", "/");
     setPagina("home");
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
+  useEffect(() => {
+    if (pagina === "home") {
+      document.title = "Fluxo CRM | O CRM e Simulador do Corretor Autônomo";
+    }
+  }, [pagina]);
+
   const [usarOriginal, setUsarOriginal] = useState(false);
 
   if (usarOriginal) {
     return (
       <div className="relative">
-        <AppOriginal />
+        <AppOriginal
+          onVerTermos={irParaTermos}
+          onVerPrivacidade={irParaPrivacidade}
+        />
         <div className="fixed bottom-4 right-4 z-50">
           <button
             onClick={() => setUsarOriginal(false)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
           >
             <i className="fa-solid fa-compress text-[10px] text-blue-400" /> Versão compacta
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (pagina === "termos") {
+    return (
+      <div className="relative">
+        <Termos
+          dark={dark}
+          onToggleTheme={() => setDark((v) => !v)}
+          onVoltar={irParaHome}
+          onVerTermos={irParaTermos}
+          onVerPrivacidade={irParaPrivacidade}
+          Footer={Footer}
+        />
+        {/* Botão flutuante de teste para comparar com a versão original */}
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={() => setUsarOriginal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
+          >
+            <i className="fa-solid fa-expand text-[10px] text-slate-400" /> Versão completa
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (pagina === "privacidade") {
+    return (
+      <div className="relative">
+        <Privacidade
+          dark={dark}
+          onToggleTheme={() => setDark((v) => !v)}
+          onVoltar={irParaHome}
+          onVerTermos={irParaTermos}
+          onVerPrivacidade={irParaPrivacidade}
+          Footer={Footer}
+        />
+        {/* Botão flutuante de teste para comparar com a versão original */}
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={() => setUsarOriginal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-[11px] shadow-md transition-all border border-slate-700/60 backdrop-blur-sm cursor-pointer"
+          >
+            <i className="fa-solid fa-expand text-[10px] text-slate-400" /> Versão completa
           </button>
         </div>
       </div>
@@ -2493,6 +2600,8 @@ function FluxoLandingPage() {
           dark={dark}
           onToggleTheme={() => setDark((v) => !v)}
           onVoltar={irParaHome}
+          onVerTermos={irParaTermos}
+          onVerPrivacidade={irParaPrivacidade}
         />
         {/* Botão flutuante de teste para comparar com a versão original */}
         <div className="fixed bottom-4 right-4 z-50">
@@ -2521,7 +2630,11 @@ function FluxoLandingPage() {
         <Faq />
         <CtaFinal />
       </main>
-      <Footer />
+      <Footer
+        onVerTermos={irParaTermos}
+        onVerPrivacidade={irParaPrivacidade}
+        onVoltarHome={irParaHome}
+      />
 
       {/* Botão flutuante de teste para comparar com a versão original */}
       <div className="fixed bottom-4 right-4 z-50">
